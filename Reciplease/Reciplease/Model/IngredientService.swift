@@ -15,7 +15,6 @@ class IngredientService {
 
     func add(ingredient: Ingredient) {
         ingredients.append(ingredient)
-        print(ingredients)
     }
     
     func remove(at index: Int) {

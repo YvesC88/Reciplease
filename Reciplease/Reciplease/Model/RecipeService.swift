@@ -68,25 +68,4 @@ class RecipeService {
         }
         task?.resume()
     }
-    
-    func getImage(completionHandler: @escaping (Data?) -> Void) {
-        let pictureURL = URL(string: "https://api.edamam.com/api/repices/v2?type=public&q=\(qParam)&app_id=089204a1&app_key=3d30c9ee6f670bb3194a8533adfde190")
-        var request = URLRequest(url: pictureURL!)
-        request.httpMethod = "GET"
-        task?.cancel()
-        task = session.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                completionHandler(nil)
-                return
-            }
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completionHandler(nil)
-                print("error")
-                return
-            }
-            completionHandler(data)
-            print("success")
-        }
-        task?.resume()
-    }
 }

@@ -19,11 +19,11 @@
 		FBA9725328413A48000C49B8 /* IngredientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA9725228413A48000C49B8 /* IngredientService.swift */; };
 		FBA9725528413A53000C49B8 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA9725428413A53000C49B8 /* Ingredient.swift */; };
 		FBB3224B284A2A1C0053C060 /* PresentRecipeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3224A284A2A1C0053C060 /* PresentRecipeCell.swift */; };
+		FBB5CBDF2855E4EE006C09E2 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB5CBDE2855E4EE006C09E2 /* DetailsViewController.swift */; };
 		FBBFA99C2845286A00FABB31 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FBBFA99B2845286A00FABB31 /* Alamofire */; };
 		FBBFA99E284619C300FABB31 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBBFA99D284619C300FABB31 /* Recipe.swift */; };
 		FBBFA9A028461D6500FABB31 /* ResultRecipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBBFA99F28461D6500FABB31 /* ResultRecipeController.swift */; };
 		FBBFA9A228461F3800FABB31 /* RecipeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBBFA9A128461F3800FABB31 /* RecipeService.swift */; };
-		FBE26D43284FC7B60052B74F /* RecipeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE26D42284FC7B60052B74F /* RecipeImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,10 +60,10 @@
 		FBA9725228413A48000C49B8 /* IngredientService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientService.swift; sourceTree = "<group>"; };
 		FBA9725428413A53000C49B8 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		FBB3224A284A2A1C0053C060 /* PresentRecipeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentRecipeCell.swift; sourceTree = "<group>"; };
+		FBB5CBDE2855E4EE006C09E2 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		FBBFA99D284619C300FABB31 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
 		FBBFA99F28461D6500FABB31 /* ResultRecipeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultRecipeController.swift; sourceTree = "<group>"; };
 		FBBFA9A128461F3800FABB31 /* RecipeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeService.swift; sourceTree = "<group>"; };
-		FBE26D42284FC7B60052B74F /* RecipeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +157,7 @@
 			children = (
 				FBA9724E284138B1000C49B8 /* SearchViewController.swift */,
 				FBBFA99F28461D6500FABB31 /* ResultRecipeController.swift */,
+				FBB5CBDE2855E4EE006C09E2 /* DetailsViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -167,7 +168,6 @@
 				FBA9725228413A48000C49B8 /* IngredientService.swift */,
 				FBA9725428413A53000C49B8 /* Ingredient.swift */,
 				FBBFA9A128461F3800FABB31 /* RecipeService.swift */,
-				FBE26D42284FC7B60052B74F /* RecipeImage.swift */,
 				FBBFA99D284619C300FABB31 /* Recipe.swift */,
 			);
 			path = Model;
@@ -322,7 +322,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBB3224B284A2A1C0053C060 /* PresentRecipeCell.swift in Sources */,
-				FBE26D43284FC7B60052B74F /* RecipeImage.swift in Sources */,
 				FBA9721C28413863000C49B8 /* AppDelegate.swift in Sources */,
 				FBBFA99E284619C300FABB31 /* Recipe.swift in Sources */,
 				FBA9725328413A48000C49B8 /* IngredientService.swift in Sources */,
@@ -331,6 +330,7 @@
 				FBA9721E28413863000C49B8 /* SceneDelegate.swift in Sources */,
 				FBA9724F284138B1000C49B8 /* SearchViewController.swift in Sources */,
 				FBBFA9A228461F3800FABB31 /* RecipeService.swift in Sources */,
+				FBB5CBDF2855E4EE006C09E2 /* DetailsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

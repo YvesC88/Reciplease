@@ -9,9 +9,11 @@ import Foundation
 import UIKit
 
 class ResultRecipeController: UIViewController {
+    
     @IBOutlet weak var tableView: UITableView!
     
-    var numberOfRecipes: Int?
+    var recipeImage: UIImage?
+    
     private var result: ResultRecipe? {
         didSet {
             DispatchQueue.main.async {
@@ -53,7 +55,11 @@ extension ResultRecipeController: UITableViewDataSource {
         }
         if indexPath.row < result.hits.count {
             let recipe = result.hits[indexPath.row].recipe
-            cell.congigure(title: recipe.label, subtitle: "" , with: RecipeImage(image: Data , urlImage: recipe.url), like: "100", time: "\(recipe.totalTime)")
+            let pictureURL = URL(string: recipe.images.regular.url)!
+            if let data = try? Data(contentsOf: pictureURL) {
+                recipeImage = UIImage(data: data)
+            }
+            cell.configure(title: recipe.label, subtitle: recipe.ingredients[0].food, with: recipeImage!, like: "100", time: "\((recipe.totalTime)/60)h")
         }
         return cell
     }

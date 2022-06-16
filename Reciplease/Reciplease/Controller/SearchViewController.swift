@@ -11,10 +11,13 @@ import UIKit
 class SearchViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var searchRecipesButton: UIButton!
+    @IBOutlet weak var clearButton: UIButton!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
+        hiddenButton()
     }
     
     @IBAction func dismissKeyboard(_ sender: UITapGestureRecognizer) {
@@ -29,10 +32,22 @@ class SearchViewController: UIViewController {
         IngredientService.shared.add(ingredient: ingredient)
         tableView.reloadData()
         nameTextField.text = ""
+        nameTextField.resignFirstResponder()
+        searchRecipesButton.isEnabled = true
+        clearButton.isEnabled = true
     }
+    
     @IBAction func clear() {
         IngredientService.shared.clear()
         tableView.reloadData()
+        hiddenButton()
+    }
+    
+    func hiddenButton() {
+        if IngredientService.shared.ingredients.isEmpty {
+            searchRecipesButton.isEnabled = false
+            clearButton.isEnabled = false
+        }
     }
 }
 
