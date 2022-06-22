@@ -9,10 +9,7 @@ import Foundation
 import UIKit
 
 class ResultRecipeController: UIViewController {
-    
     @IBOutlet weak var tableView: UITableView!
-    
-    var recipeImage: UIImage?
     
     private var result: ResultRecipe? {
         didSet {
@@ -22,8 +19,8 @@ class ResultRecipeController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         fetchRecipes()
     }
     
@@ -55,12 +52,28 @@ extension ResultRecipeController: UITableViewDataSource {
         }
         if indexPath.row < result.hits.count {
             let recipe = result.hits[indexPath.row].recipe
-            let pictureURL = URL(string: recipe.images.regular.url)!
-            if let data = try? Data(contentsOf: pictureURL) {
-                recipeImage = UIImage(data: data)
-            }
-            cell.configure(title: recipe.label, subtitle: recipe.ingredients[0].food, with: recipeImage!, like: "100", time: "\((recipe.totalTime)/60)h")
+            cell.configure(title: recipe.label,
+                           subtitle: recipe.ingredients.first!.food,
+                           with: URL(string: recipe.images.regular.url)!,
+                           like: recipe.yield ,
+                           time: recipe.totalTime,
+                           uri: recipe.uri)
         }
         return cell
+    }
+}
+
+extension ResultRecipeController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let result = result else {
+            return
+        }
+        if indexPath.row < result.hits.count {
+            let recipe = result.hits[indexPath.row].recipe
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let customViewController = storyboard.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
+            customViewController.recipe = recipe
+            self.navigationController?.pushViewController(customViewController, animated: true)
+        }
     }
 }

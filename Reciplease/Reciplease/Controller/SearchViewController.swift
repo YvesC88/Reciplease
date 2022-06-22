@@ -80,6 +80,7 @@ extension SearchViewController: UITableViewDelegate {
         if editingStyle == .delete {
             IngredientService.shared.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            hiddenButton()
         }
     }
 }

@@ -16,11 +16,17 @@ class PresentRecipeCell: UITableViewCell {
     @IBOutlet weak var informationStackView: UIStackView!
     @IBOutlet weak var likeLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var effectImageView: UIView!
+    
+    var uri: String?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        customView(view: recipeView)
+        let newLayer = CAGradientLayer()
+        newLayer.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.black.cgColor]
+        newLayer.frame = effectImageView.frame
+        newLayer.cornerRadius = 15
+        effectImageView.layer.addSublayer(newLayer)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -28,18 +34,26 @@ class PresentRecipeCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String, subtitle: String, with background: UIImage, like: String, time: String) {
+    func configure(title: String, subtitle: String, with background: URL, like: Int, time: Int, uri: String) {
         titleLabel.text = title
         subtitleLabel.text = subtitle
-        recipeImageView.image = background
-        likeLabel.text = like
-        timeLabel.text = time
+        likeLabel.text = "\(like)"
+        timeLabel.text = "\(time)"
+        self.uri = uri
+        self.recipeImageView.image = nil
+        downloadImage(url: background, uri: uri)
     }
     
-    func customView(view: UIView) {
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOffset = CGSize(width: 0, height: 5)
-        view.layer.shadowOpacity = 0.5
-        view.layer.shadowRadius = 1
+    func downloadImage(url: URL, uri: String) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let data = try? Data(contentsOf: url) {
+                let image = UIImage(data: data)
+                if let currentUri = self.uri, uri == currentUri {
+                    DispatchQueue.main.async {
+                        self.recipeImageView.image = image
+                    }
+                }
+            }
+        }
     }
 }
