@@ -1,5 +1,5 @@
 //
-//  Recipe.swift
+//  RecipeJSON.swift
 //  Reciplease
 //
 //  Created by Yves Charpentier on 31/05/2022.

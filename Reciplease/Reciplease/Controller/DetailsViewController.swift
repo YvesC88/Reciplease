@@ -13,6 +13,7 @@ class DetailsViewController: UIViewController {
     @IBOutlet weak var ingredientsTextView: UITextView!
     @IBOutlet weak var titleRecipeLabel: UILabel!
     @IBOutlet weak var effectView: UIView!
+    @IBOutlet weak var favoriteButton: UIButton!
     
     var recipe: Recipe!
     
@@ -44,5 +45,20 @@ class DetailsViewController: UIViewController {
         newLayer.frame = view.frame
         newLayer.cornerRadius = 15
         effectView.layer.addSublayer(newLayer)
+    }
+    @IBAction func getFavoriteRecipe() {
+        favoriteButton.isSelected = !favoriteButton.isSelected
+        saveRecipe(name: recipe.label)
+        
+    }
+    
+    private func saveRecipe(name: String) {
+        let recipes = Recipes(context: CoreDataStack.share.viewContext)
+        recipes.title = name
+        do {
+           try CoreDataStack.share.viewContext.save()
+        } catch {
+            print("Error")
+        }
     }
 }
