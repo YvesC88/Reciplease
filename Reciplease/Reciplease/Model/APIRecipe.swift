@@ -1,5 +1,5 @@
 //
-//  RecipeJSON.swift
+//  APIRecipe.swift
 //  Reciplease
 //
 //  Created by Yves Charpentier on 31/05/2022.
@@ -55,7 +55,7 @@ struct Recipe: Codable {
     let source: String
     let url: String
     let shareAs: String
-    let yield: Int
+    let yield: Double
     let healthLabels, cautions, ingredientLines: [String]
     let ingredients: [RecipeIngredients]
     let calories, totalWeight: Double

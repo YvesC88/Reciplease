@@ -48,13 +48,14 @@ class DetailsViewController: UIViewController {
     }
     @IBAction func getFavoriteRecipe() {
         favoriteButton.isSelected = !favoriteButton.isSelected
-        saveRecipe(name: recipe.label)
+        saveRecipe(title: recipe.label, subtitle: recipe.ingredients.first!.food)
         
     }
     
-    private func saveRecipe(name: String) {
-        let recipes = Recipes(context: CoreDataStack.share.viewContext)
-        recipes.title = name
+    private func saveRecipe(title: String, subtitle: String) {
+        let recipes = LocalRecipe(context: CoreDataStack.share.viewContext)
+        recipes.title = title
+        recipes.subtitle = subtitle
         do {
            try CoreDataStack.share.viewContext.save()
         } catch {

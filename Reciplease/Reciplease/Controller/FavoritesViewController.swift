@@ -12,10 +12,23 @@ import CoreData
 class FavoritesViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        tableView.reloadData()
+    var favoriteRecipe: [LocalRecipe] = [] {
+        didSet {
+            tableView.reloadData()
+        }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchRecipes()
+    }
+    
+    func fetchRecipes() {
+        let request: NSFetchRequest<LocalRecipe> = LocalRecipe.fetchRequest()
+        guard let recipe = try? CoreDataStack.share.viewContext.fetch(request) else { return }
+        favoriteRecipe = recipe
+    }
+    
 }
 
 extension FavoritesViewController: UITableViewDataSource {
@@ -25,20 +38,31 @@ extension FavoritesViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return favoriteRecipe.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeCell", for: indexPath)
-        let request: NSFetchRequest<Recipes> = Recipes.fetchRequest()
-        guard let recipe = try? CoreDataStack.share.viewContext.fetch(request) else { return cell }
-        var recipeText = ""
-        for recipe in recipe {
-            if let name = recipe.title {
-                recipeText += name
+        if indexPath.row < favoriteRecipe.count {
+            let recipe = favoriteRecipe[indexPath.row]
+            cell.textLabel?.text = recipe.title
+            cell.detailTextLabel?.text = recipe.subtitle
+        }
+        return cell
+    }
+}
+
+extension FavoritesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let context = CoreDataStack.share.viewContext
+            context.delete(favoriteRecipe[indexPath.row])
+            favoriteRecipe.remove(at: indexPath.row)
+            do {
+                try context.save()
+            } catch {
+                print("Error")
             }
         }
-        cell.textLabel?.text = recipeText
-        return cell
     }
 }

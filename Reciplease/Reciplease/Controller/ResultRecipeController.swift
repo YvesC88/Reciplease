@@ -55,7 +55,7 @@ extension ResultRecipeController: UITableViewDataSource {
             cell.configure(title: recipe.label,
                            subtitle: recipe.ingredients.first!.food,
                            with: URL(string: recipe.images.regular.url)!,
-                           like: recipe.yield ,
+                           like: Int(recipe.yield) ,
                            time: recipe.totalTime,
                            uri: recipe.uri)
         }
