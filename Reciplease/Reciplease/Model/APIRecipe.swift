@@ -5,12 +5,13 @@
 //  Created by Yves Charpentier on 31/05/2022.
 //
 import Foundation
+import UIKit
 
 // MARK: - Welcome
 struct ResultRecipe: Codable {
     let from, to, count: Int
     let hits: [Hit]
-
+    
     enum CodingKeys: String, CodingKey {
         case from, to, count
         case hits
@@ -19,8 +20,8 @@ struct ResultRecipe: Codable {
 
 // MARK: - Hit
 struct Hit: Codable {
-    let recipe: Recipe
-
+    let recipe: APIRecipe
+    
     enum CodingKeys: String, CodingKey {
         case recipe
     }
@@ -29,7 +30,7 @@ struct Hit: Codable {
 // MARK: - HitLinks
 struct HitLinks: Codable {
     let linksSelf: Next
-
+    
     enum CodingKeys: String, CodingKey {
         case linksSelf = "self"
     }
@@ -47,7 +48,7 @@ enum Title: String, Codable {
 }
 
 // MARK: - Recipe
-struct Recipe: Codable {
+struct APIRecipe: Codable {
     let uri: String
     let label: String
     let image: String
@@ -82,7 +83,7 @@ struct RecipeIngredients: Codable {
     let foodCategory: String?
     let foodID: String
     let image: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case text, quantity, measure, food, weight, foodCategory
         case foodID = "foodId"
@@ -101,7 +102,7 @@ struct Total: Codable {
 struct Images: Codable {
     let thumbnail, small, regular: Large
     let large: Large?
-
+    
     enum CodingKeys: String, CodingKey {
         case thumbnail = "THUMBNAIL"
         case small = "SMALL"
@@ -114,4 +115,25 @@ struct Images: Codable {
 struct Large: Codable {
     let url: String
     let width, height: Int
+}
+
+extension APIRecipe {
+    func toRecipe() -> Recipe {
+        let imageURL = URL(string: self.images.regular.url)
+        var imageData: Data?
+        if let data = try? Data(contentsOf: imageURL!) {
+            imageData = data
+        }
+        var ingredientLines: String = ""
+        for ingredientLine in self.ingredientLines {
+            ingredientLines += "\n- \(ingredientLine)"
+        }
+        return Recipe(title: self.label,
+                      subtitle: self.ingredients.first?.food,
+                      image: imageData,
+                      like: self.yield,
+                      time: self.totalTime,
+                      detailIngredients: ingredientLines,
+                      url: url)
+    }
 }

@@ -22,11 +22,7 @@ class PresentRecipeCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        let newLayer = CAGradientLayer()
-        newLayer.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.black.cgColor]
-        newLayer.frame = effectImageView.frame
-        newLayer.cornerRadius = 15
-        effectImageView.layer.addSublayer(newLayer)
+//        customView(view: effectImageView)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -34,26 +30,22 @@ class PresentRecipeCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String, subtitle: String, with background: URL, like: Int, time: Int, uri: String) {
+    func configure(title: String?, subtitle: String?, with background: Data?, like: Double?, time: Int?, uri: String?) {
         titleLabel.text = title
         subtitleLabel.text = subtitle
-        likeLabel.text = "\(like)"
-        timeLabel.text = "\(time)"
+        likeLabel.text = like == nil ? "" : "\(like!)"
+        timeLabel.text = time == nil ? "" : "\(time!)"
         self.uri = uri
-        self.recipeImageView.image = nil
-        downloadImage(url: background, uri: uri)
+        self.recipeImageView.image = background == nil ? nil : UIImage(data: background!)
     }
-    
-    func downloadImage(url: URL, uri: String) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let data = try? Data(contentsOf: url) {
-                let image = UIImage(data: data)
-                if let currentUri = self.uri, uri == currentUri {
-                    DispatchQueue.main.async {
-                        self.recipeImageView.image = image
-                    }
-                }
-            }
-        }
+}
+
+extension PresentRecipeCell {
+    func customView(view: UIView) {
+        let newLayer = CAGradientLayer()
+        newLayer.colors = [UIColor.clear.cgColor, UIColor.clear.cgColor, UIColor.black.cgColor]
+        newLayer.frame = view.frame
+        newLayer.cornerRadius = 15
+        view.layer.addSublayer(newLayer)
     }
 }

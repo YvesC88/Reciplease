@@ -10,8 +10,9 @@ import UIKit
 
 class ResultRecipeController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private var result: ResultRecipe? {
+    private var result: [Recipe] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -21,13 +22,21 @@ class ResultRecipeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        toggleActivityIndicator(shown: true)
         fetchRecipes()
     }
     
     func fetchRecipes() {
         RecipeService.shared.getValue { result in
-            self.result = result
+            let recipes = result?.hits.map({ $0.recipe.toRecipe() })
+            self.result = recipes ?? []
+            self.toggleActivityIndicator(shown: false)
         }
+    }
+    
+    private func toggleActivityIndicator(shown: Bool) {
+        tableView.isHidden = shown
+        activityIndicator.isHidden = !shown
     }
 }
 
@@ -37,26 +46,20 @@ extension ResultRecipeController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let result = result else {
-            return 1
-        }
-        return result.hits.count
+        return result.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PresentRecipeCell", for: indexPath) as? PresentRecipeCell else {
             return UITableViewCell()
         }
-        guard let result = result else {
-            return cell
-        }
-        if indexPath.row < result.hits.count {
-            let recipe = result.hits[indexPath.row].recipe
-            cell.configure(title: recipe.label,
-                           subtitle: recipe.ingredients.first!.food,
-                           with: URL(string: recipe.images.regular.url)!,
-                           like: Int(recipe.yield) ,
-                           time: recipe.totalTime,
+        if indexPath.row < result.count {
+            let recipe = result[indexPath.row]
+            cell.configure(title: recipe.title,
+                           subtitle: recipe.subtitle,
+                           with: recipe.image,
+                           like: recipe.like ,
+                           time: recipe.time,
                            uri: recipe.uri)
         }
         return cell
@@ -65,11 +68,8 @@ extension ResultRecipeController: UITableViewDataSource {
 
 extension ResultRecipeController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let result = result else {
-            return
-        }
-        if indexPath.row < result.hits.count {
-            let recipe = result.hits[indexPath.row].recipe
+        if indexPath.row < result.count {
+            let recipe = result[indexPath.row]
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let customViewController = storyboard.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
             customViewController.recipe = recipe

@@ -11,3 +11,15 @@ import CoreData
 class LocalRecipe: NSManagedObject {
     
 }
+
+extension LocalRecipe {
+    func toRecipe() -> Recipe {
+        return Recipe(title: title,
+                      subtitle: subtitle,
+                      image: recipeImage,
+                      like: like,
+                      time: Int(time),
+                      detailIngredients: ingredientLines,
+                      url: url)
+    }
+}

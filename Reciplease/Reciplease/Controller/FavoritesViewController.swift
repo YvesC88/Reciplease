@@ -42,11 +42,17 @@ extension FavoritesViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeCell", for: indexPath) as? PresentRecipeCell else {
+            return UITableViewCell()
+        }
         if indexPath.row < favoriteRecipe.count {
             let recipe = favoriteRecipe[indexPath.row]
-            cell.textLabel?.text = recipe.title
-            cell.detailTextLabel?.text = recipe.subtitle
+            cell.configure(title: recipe.title!,
+                           subtitle: recipe.subtitle!,
+                           with: recipe.recipeImage ,
+                           like: recipe.like,
+                           time: Int(recipe.time),
+                           uri: recipe.uri)
         }
         return cell
     }
@@ -63,6 +69,15 @@ extension FavoritesViewController: UITableViewDelegate {
             } catch {
                 print("Error")
             }
+        }
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row < favoriteRecipe.count {
+            let recipe = favoriteRecipe[indexPath.row]
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let customViewController = storyboard.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
+            customViewController.localRecipe = recipe
+            self.navigationController?.pushViewController(customViewController, animated: true)
         }
     }
 }

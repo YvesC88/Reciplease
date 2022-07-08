@@ -14,29 +14,31 @@ class DetailsViewController: UIViewController {
     @IBOutlet weak var titleRecipeLabel: UILabel!
     @IBOutlet weak var effectView: UIView!
     @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var getDirectionsButton: UIButton!
     
+    var localRecipe: LocalRecipe!
     var recipe: Recipe!
+    var uri: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pictureDisplay()
-        recipeDisplay()
-        titleRecipeLabel.text = recipe.label
         customView(view: effectView)
+        viewDisplay()
     }
     
-    func pictureDisplay() {
-        let url = URL(string: recipe.images.regular.url)
-        if let data = try? Data(contentsOf: url!) {
-            let image = UIImage(data: data)
-            recipeImageView.image = image
+    func viewDisplay() {
+        guard let imageData = recipe?.image else {
+            favoriteButton.isSelected = true
+            ingredientsTextView.text = localRecipe.ingredientLines
+            titleRecipeLabel.text = localRecipe.title
+            recipeImageView.image = UIImage(data: localRecipe.recipeImage!)
+            return
         }
-    }
-    
-    func recipeDisplay() {
-        for i in recipe.ingredientLines {
-            ingredientsTextView.text += "\n- \(i)"
-        }
+        ingredientsTextView.text = recipe?.detailIngredients
+        titleRecipeLabel.text = recipe?.title
+        let image = UIImage(data: imageData)
+        recipeImageView.image = image
+        favoriteButton.setImage(UIImage(systemName: "star"), for: .normal)
     }
     
     func customView(view: UIView) {
@@ -46,20 +48,31 @@ class DetailsViewController: UIViewController {
         newLayer.cornerRadius = 15
         effectView.layer.addSublayer(newLayer)
     }
+    
     @IBAction func getFavoriteRecipe() {
-        favoriteButton.isSelected = !favoriteButton.isSelected
-        saveRecipe(title: recipe.label, subtitle: recipe.ingredients.first!.food)
-        
+        if favoriteButton.isSelected {
+            favoriteButton.setImage(UIImage(systemName: "star"), for: .selected)
+            RecipeService.shared.unsaveRecipe(localRecipe: localRecipe)
+            getDirectionsButton.isEnabled = false
+        } else {
+            favoriteButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            RecipeService.shared.saveRecipe(title: recipe.title,
+                                            subtitle: recipe.subtitle,
+                                            with: recipe.image,
+                                            ingredientLines: recipe.detailIngredients,
+                                            like: recipe.like,
+                                            time: recipe.time,
+                                            uri: recipe.uri,
+                                            url: recipe.url)
+            favoriteButton.isSelected = true
+        }
     }
     
-    private func saveRecipe(title: String, subtitle: String) {
-        let recipes = LocalRecipe(context: CoreDataStack.share.viewContext)
-        recipes.title = title
-        recipes.subtitle = subtitle
-        do {
-           try CoreDataStack.share.viewContext.save()
-        } catch {
-            print("Error")
+    @IBAction func getDirections() {
+        if localRecipe == localRecipe {
+            if let url = URL(string: localRecipe.url!) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
         }
     }
 }

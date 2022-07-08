@@ -9,7 +9,6 @@ import Foundation
 import Alamofire
 import UIKit
 
-
 class RecipeService {
     static let shared = RecipeService()
     private init() {}
@@ -35,12 +34,38 @@ class RecipeService {
                    parameters: parameters).responseDecodable(of: ResultRecipe.self) { response in
             guard let recipe = response.value else {
                 callback(nil)
-                print("Error")
                 return
             }
             callback(recipe)
             print("Success")
             
+        }
+    }
+    
+    func saveRecipe(title: String?, subtitle: String?, with recipeImage: Data?, ingredientLines: String?, like: Double?, time: Int?, uri: String?, url: String?) {
+        let recipes = LocalRecipe(context: CoreDataStack.share.viewContext)
+        recipes.title = title
+        recipes.subtitle = subtitle
+        recipes.recipeImage = recipeImage
+        recipes.ingredientLines = ingredientLines
+        recipes.like = like!
+        recipes.time = Int64(time!)
+        recipes.uri = uri
+        recipes.url = url
+        do {
+            try CoreDataStack.share.viewContext.save()
+        } catch {
+            print("Error")
+        }
+    }
+    
+    func unsaveRecipe(localRecipe: LocalRecipe) {
+        let context = CoreDataStack.share.viewContext
+        context.delete(localRecipe)
+        do {
+            try CoreDataStack.share.viewContext.save()
+        } catch {
+            print("Error")
         }
     }
 }
